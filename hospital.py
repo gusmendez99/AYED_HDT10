@@ -1,6 +1,8 @@
-# Universidad del valle de Guatemala
+# Universidad del Valle de Guatemala
 # Algoritmos y Estructura de Datos - HDT10
 # Gustavo Mendez - 18500
+# Roberto Figueroa - 18306
+# Luis Urbina - 18473
 # Archivo: hospital.py
 # Fecha: 12/05/2019
 # Desc: Modulo que se encarga de la conexion a Neo4J, para la creacion de relaciones entre medicina, paciente y doctor
@@ -20,7 +22,7 @@ drugs = driver.labels.create("Drug")
 
 
 def registerMedicalVisit(patientName, doctorName, drugName, initDate, endDate, dose):
-    drug = addDrug(drugName, initDate, endDate, dose)
+    addDrug(drugName, initDate, endDate, dose)
     linkPatientWithDoctor(patientName, doctorName)
     linkPatientWithDrug(patientName, drugName)
     linkDoctorWithDrug(doctorName, drugName)
@@ -226,3 +228,18 @@ def getDoctorRecommendationByKnownDoctor(specialty, doctorName):
 				recommendationDoctorList.append(node[2]["name"])
 	
 	return recommendationDoctorList
+
+#UTILS
+def validateNumber(variable): 
+    try:
+        #Try cast
+        int(variable)
+        return True
+    except ValueError:        
+        return False
+
+def isOptionInRange(x, a, b):
+    #Validates range
+    if(x >= a and x <= b) or (x <= a and x >= b):
+        return True
+    return False
