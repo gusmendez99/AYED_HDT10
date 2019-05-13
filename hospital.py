@@ -161,14 +161,14 @@ def linkDoctorWithDoctor(doctorName1, doctorName2):
     myDoctor1.relationships.create("KNOWS", myDoctor2)
 
 
-# RECOMMENDATION SYSTEM
+# RECOMMENDATION OF FRIENDS BY KNOWN DOCTOR SPECIALTY 
 def getDoctorRecommendationByKnownPeople(patientName, specialty):
     # Initialize lists
     doctorKnownPeopleList, doctorsBySpecialtyList, friendsKnownPeopleList = []
 
     recommendationDoctorList = []  # Recommended doctors
 
-    knownPeopleList = getKnownPeopleByPatient(nombrePa)
+    knownPeopleList = getKnownPeopleByPatient(patientName)
     doctorsBySpecialtyList = filterDoctorBySpecialty(specialty)
 
 	# If currPatient knows people...
@@ -195,7 +195,7 @@ def getDoctorRecommendationByKnownPeople(patientName, specialty):
         # If doctor has been visited by friends of current patient friends
         for i in range(len(doctorsBySpecialtyList)):
             for j in range(len(friendsKnownPeopleList)):
-                query = "MATCH (p:Paciente)-[r:VISITS]->(d:Doctor) WHERE p.name=\"{0}\" AND d.name=\"{0}\" RETURN p,d".format(
+                query = "MATCH (p:Paciente)-[r:VISITS]->(d:Doctor) WHERE p.name=\"{0}\" AND d.name=\"{1}\" RETURN p,d".format(
                     friendsKnownPeopleList[j], doctorsBySpecialtyList[i])
 
                 results = driver.query(
@@ -205,8 +205,7 @@ def getDoctorRecommendationByKnownPeople(patientName, specialty):
 
         return recommendationDoctorList
 
-
-# funcion para la recomendacion de doctores que conocen a cierto doctor
+# RECOMMENDATION BETWEEN DOCTORS
 def getDoctorRecommendationByKnownDoctor(specialty, doctorName):
 
 	recommendationDoctorList = []
