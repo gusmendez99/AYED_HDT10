@@ -9,7 +9,6 @@
 
 from neo4jrestclient.client import GraphDatabase
 from neo4jrestclient import client
-import sys
 from datetime import datetime
 from datetime import timedelta
 
@@ -135,9 +134,14 @@ def linkPatientWithPatient(patientName1, patientName2):
         patientName2)
     results = driver.query(queryPatient2, returns=(client.Node))
 
+    patientsExist = False
+
     for node in results:
+        patientsExist = True
         myPatient2 = node[0]
         myPatient1.relationships.create("KNOWS", myPatient2)
+
+    return patientsExist
 
 
 def linkDoctorWithPatient(doctorName, patientName):

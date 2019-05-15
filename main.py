@@ -73,24 +73,92 @@ while(option != 8):
             elif(option == 4): #Get doctors by specialty
                 #print("Not implemented yet")
                 specialty = input("Ingrese la especialidad: ")
-                if(len(doctorSpecialty) > 0):
+                doctors = filterDoctorBySpecialty(specialty)
+                if(len(doctors) > 0):
                     print("DOCTORES PARA ESTA ESPECIALIDAD: {0}".format(len(doctors)))
-                    print("**************************************")
-                    doctors = filterDoctorBySpecialty(specialty)
+                    print("**************************************")                    
                     for doctor in doctors:
                         print("Doctor: {0}".format(doctor))
                     print("")
                 else:
                     print("No se encontraron doctores para esa especialidad, intente de nuevo...")
 
-            elif(option == 5): #Add relationship between patients
-                print("Not implemented yet")
+            elif(option == 5): #Add relationship between patients or doctors
+                #print("Not implemented yet")
 
-            elif(option == 6): #Get First doctor recommendation
-                print("Not implemented yet")
+                optionRelationship = 0
+                while(optionRelationship != 3):
+                    print("""
+                    ***********************
+                    Elija una opcion:
+                    1. Relacion entre pacientes
+                    2. Relacion entre doctores
+                    3. Salir
+                    ***********************
+                    """)
+
+                    secondaryOption = input("> ")
+                    if(validateNumber(secondaryOption)):
+                        secondaryOption = int(secondaryOption)
+                        #Check if option is in range
+                        validRange = isOptionInRange(secondaryOption, 1, 3)
+                        if(validRange):
+                            if(secondaryOption == 1): #Add relationship between patients
+                                namePatient1 = input("Ingrese el nombre del paciente que desea relacionar: ")
+                                namePatient2 = input("Ingrese el nombre del otro paciente: ")
+                                if(linkPatientWithPatient(namePatient1, namePatient2)):
+                                    print("Relacion entre pacientes creada exitosamente")
+                                else:
+                                    print("Ocurrio un error, revisa si los 2 pacientes existen...")
+                            
+                            elif(secondaryOption == 2): #Add relationship between patients
+                                nameDoctor1 = input("Ingrese el nombre del doctor que desea relacionar: ")
+                                nameDoctor2 = input("Ingrese el nombre del otro doctor: ")
+                                if(linkDoctorWithDoctor(namePatient1, namePatient2)):
+                                    print("Relacion entre pacientes creada exitosamente")
+                                else:
+                                    print("Ocurrio un error, revisa si los 2 pacientes existen...")
+                            elif(secondaryOption == 3):
+                                print("Volviendo a menu principal...")
+                        
+                        else:
+                            print("El valor no se encuentra en el rango, prueba de nuevo...")
+                    else:
+                        print("La entrada no es un numero, intenta de nuevo...")
+
+
+            elif(option == 6): #Get First doctor recommendation, my doctor has relation with other doctors
+                #print("Not implemented yet")
+                specialty = input("Sobre qué especialidad espera la recomendación?: ")
+                myDoctor = input("Qué doctor desea que le recomiende otros doctores?: ")
+                recommendedDoctors = getDoctorRecommendationByKnownDoctor(specialty, myDoctor)
+                
+                if(len(recommendedDoctors) > 0):
+                    print("DOCTORES PARA ESTA ESPECIALIDAD: {0}".format(len(recommendedDoctors)))
+                    print("**************************************")
+                    for doctor in recommendedDoctors:
+                        print("Doctor: {0}".format(doctor))
+                    
+                    print("")
+                else:
+                    print("El doctor que ingresaste no tiene recomendaciones para mostrarte ahorita :( ...")
 
             elif(option == 7): #Get Second doctor recommendation
-                print("Not implemented yet")
+                #print("Not implemented yet")
+                specialty = input("Sobre qué especialidad espera la recomendación?: ")
+                myPatientKnown = input("Qué paciente/amigo desea que le recomiende otros doctores?: ")
+                recommendedDoctors = getDoctorRecommendationByKnownPeople(myPatientKnown, specialty)
+                
+                if(len(recommendedDoctors) > 0):
+                    print("DOCTORES PARA ESTA ESPECIALIDAD: {0}".format(len(recommendedDoctors)))
+                    print("**************************************")
+                    for doctor in recommendedDoctors:
+                        print("Doctor: {0}".format(doctor))
+                    
+                    print("")
+                else:
+                    print("El paciente/amigo que ingresaste no tiene recomendaciones para mostrarte ahorita :( ...")
+
                 
             elif(option == 8): #Exit
                 print("Saliendo...")
