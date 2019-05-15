@@ -10,22 +10,30 @@
 from neo4jrestclient.client import GraphDatabase
 from neo4jrestclient import client
 import sys
+from datetime import datetime
+from datetime import timedelta
 
-driver = GraphDatabase("http://localhost:7474",
-                       username="neo4j", password="1234")
-
+driver = GraphDatabase("http://localhost:7474", username="neo4j", password="1234")
 patients = driver.labels.create("Patient")
 doctors = driver.labels.create("Doctor")
 drugs = driver.labels.create("Drug")
 
 # MAIN FUNCION FOR ADD A VISIT
 
+def registerMedicalVisit(patientName, doctorName, drugName, dose):
 
-def registerMedicalVisit(patientName, doctorName, drugName, initDate, endDate, dose):
-    addDrug(drugName, initDate, endDate, dose)
+    #Default: dose for 5 days
+    currentDate = datetime.now()
+    currDateStr = '{:%Y-%m-%d}'.format(currentDate)
+
+    endDoseDate = datetime.now() + timedelta(days=5)
+    endDateStr = '{:%Y-%m-%d}'.format(endDoseDate)
+
+    addDrug(drugName, currDateStr, endDateStr, dose)
     linkPatientWithDoctor(patientName, doctorName)
     linkPatientWithDrug(patientName, drugName)
     linkDoctorWithDrug(doctorName, drugName)
+    return True
 
 # SEARCHS
 

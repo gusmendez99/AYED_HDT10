@@ -12,7 +12,7 @@ from hospital import *
 print("BIENVENIDO AL PROGRAMA QUE OPTIMIZA LOS ASIENTOS DE LA BODA!\n")
 option = 1
 
-while(option != 4):
+while(option != 8):
     print("""
     ***********************
     Elija una opcion:
@@ -33,16 +33,55 @@ while(option != 4):
         validRange = isOptionInRange(option, 1, 8)
         if(validRange):
             if(option == 1): #Add Doctor
-                print("Not implemented yet")
+                #print("Not implemented yet") 
+                doctorName = input("Ingrese el nombre del doctor: ")
+                doctorSpecialty = input("Ingrese la especialidad del doctor: ")
+                doctorPhone = input("Ingrese el numero de telefono: ")
+                doctorCollegiateCode = input("Ingrese el codigo de colegiado: ")                
 
+                if(len(doctorName) > 0 and len(doctorSpecialty) > 0 and len(doctorPhone) > 0 and len(doctorCollegiateCode) > 0
+                        and validateNumber(doctorPhone) > 0):
+                    if(addDoctor(doctorName, doctorPhone, doctorCollegiateCode, doctorSpecialty) != None):
+                        print("Doctor agregado exitosamente")
+                else:
+                    print("Datos invalidos, intente de nuevo...")
+            
             elif(option == 2): #Add Patient
-                print("Not implemented yet")
+                #print("Not implemented yet") 
+                patientName = input("Ingrese el nombre del paciente: ")
+                patientPhone = input("Ingrese su numero de telefono: ")           
+
+                if(len(patientName) > 0 and len(patientPhone) > 0 and validateNumber(patientName) > 0):
+                    if(addPatient(patientName, patientPhone) != None):
+                        print("Paciente agregado exitosamente")
+                else:
+                    print("Datos invalidos, intente de nuevo...")
 
             elif(option == 3): #Add Visit
-                print("Not implemented yet")
+                #print("Not implemented yet") 
+                patientName = input("Ingrese el nombre del paciente: ")
+                doctorName = input("Ingrese el nombre del doctor: ")
+                drugName = input("Ingrese el nombre de la medicina: ")
+                dose = input("Por default, la dosis se suministra 5 dias, indique la cantidad para un dia: ")                
+
+                if(len(patientName) > 0 and len(doctorName) > 0 and len(drugName) > 0 and len(dose) > 0):
+                    if(registerMedicalVisit(patientName, doctorName, drugName, dose)):
+                        print("Visita agregada exitosamente")
+                else:
+                    print("Datos invalidos, intente de nuevo...")
             
             elif(option == 4): #Get doctors by specialty
-                print("Not implemented yet")
+                #print("Not implemented yet")
+                specialty = input("Ingrese la especialidad: ")
+                if(len(doctorSpecialty) > 0):
+                    print("DOCTORES PARA ESTA ESPECIALIDAD: {0}".format(len(doctors)))
+                    print("**************************************")
+                    doctors = filterDoctorBySpecialty(specialty)
+                    for doctor in doctors:
+                        print("Doctor: {0}".format(doctor))
+                    print("")
+                else:
+                    print("No se encontraron doctores para esa especialidad, intente de nuevo...")
 
             elif(option == 5): #Add relationship between patients
                 print("Not implemented yet")
