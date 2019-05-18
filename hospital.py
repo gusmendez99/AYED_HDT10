@@ -163,16 +163,22 @@ def linkDoctorWithDoctor(doctorName1, doctorName2):
     query = 'MATCH (d:Doctor) WHERE d.name=\"{0}\" RETURN d'.format(
         doctorName1)
     results = driver.query(query, returns=(client.Node))
+    doctorExists = False
     for node in results:
+        doctorExists = True
         myDoctor1 = node[0]
 
     query = 'MATCH (d:Doctor) WHERE d.name=\"{0}\" RETURN d'.format(
         doctorName2)
     results = driver.query(query, returns=(client.Node))
+    doctorExists = False
     for node in results:
+        doctorExists = True
         myDoctor2 = node[0]
 
     myDoctor1.relationships.create("KNOWS", myDoctor2)
+
+    return doctorExists
 
 
 # RECOMMENDATION OF FRIENDS BY KNOWN DOCTOR SPECIALTY 

@@ -51,7 +51,7 @@ while(option != 8):
                 patientName = input("Ingrese el nombre del paciente: ")
                 patientPhone = input("Ingrese su numero de telefono: ")           
 
-                if(len(patientName) > 0 and len(patientPhone) > 0 and validateNumber(patientName) > 0):
+                if(len(patientName) > 0 and len(patientPhone) > 0 and validateNumber(patientPhone) > 0):
                     if(addPatient(patientName, patientPhone) != None):
                         print("Paciente agregado exitosamente")
                 else:
@@ -114,12 +114,13 @@ while(option != 8):
                             elif(secondaryOption == 2): #Add relationship between patients
                                 nameDoctor1 = input("Ingrese el nombre del doctor que desea relacionar: ")
                                 nameDoctor2 = input("Ingrese el nombre del otro doctor: ")
-                                if(linkDoctorWithDoctor(namePatient1, namePatient2)):
+                                if(linkDoctorWithDoctor(nameDoctor1, nameDoctor2)):
                                     print("Relacion entre pacientes creada exitosamente")
                                 else:
                                     print("Ocurrio un error, revisa si los 2 pacientes existen...")
                             elif(secondaryOption == 3):
                                 print("Volviendo a menu principal...")
+                                optionRelationship = 3
                         
                         else:
                             print("El valor no se encuentra en el rango, prueba de nuevo...")
