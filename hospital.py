@@ -163,73 +163,57 @@ def linkDoctorWithDoctor(doctorName1, doctorName2):
     query = 'MATCH (d:Doctor) WHERE d.name=\"{0}\" RETURN d'.format(
         doctorName1)
     results = driver.query(query, returns=(client.Node))
-    doctorExists = False
     for node in results:
-        doctorExists = True
         myDoctor1 = node[0]
 
     query = 'MATCH (d:Doctor) WHERE d.name=\"{0}\" RETURN d'.format(
         doctorName2)
     results = driver.query(query, returns=(client.Node))
-    doctorExists = False
     for node in results:
-        doctorExists = True
         myDoctor2 = node[0]
 
-    myDoctor1.relationships.create("KNOWS", myDoctor2)
+    if(myDoctor1 != None and myDoctor2 != None):
+        myDoctor1.relationships.create("KNOWS", myDoctor2)
+        return True
+    
+    return False
 
-    return doctorExists
+    
 
 
 # RECOMMENDATION OF FRIENDS BY KNOWN DOCTOR SPECIALTY 
 def getDoctorRecommendationByKnownPeople(patientName, specialty):
     # Initialize lists
-    doctorKnownPeopleList, doctorsBySpecialtyList, friendsKnownPeopleList = []
+    recommendationDoctorList = []
+    
+    query = 'MATCH (p:Patient)-[r:VISITS]->(d:Doctor) WHERE p.name=\"{0}\" and d.specialty=\"{1}\" RETURN p, type(r), d'.format(
+        patientName, specialty)
+    results = driver.query(query, returns=(client.Node, str, client.Node))
 
-    recommendationDoctorList = []  # Recommended doctors
-
+    for node in results:
+        recommendationDoctorList.append(node[2]["name"])  # adds known patient name
+        
     knownPeopleList = getKnownPeopleByPatient(patientName)
-    doctorsBySpecialtyList = filterDoctorBySpecialty(specialty)
 
 	# If currPatient knows people...
-    if (knownPeopleList != None):
-        for patientName in knownPeopleList:
-            query = 'MATCH (p:Patient)-[r:KNOWS]->(u:Patient) WHERE p.name=\"{0}\" RETURN u'.format(
-                patientName)
+    if (knownPeopleList != None and len(knownPeopleList) > 0):
+        # Recommendation of firends of current patient
+        for currPatientName in knownPeopleList:
+            query = 'MATCH (p:Patient)-[r:VISITS]->(d:Doctor) WHERE p.name=\"{0}\" AND d.specialty=\"{1}\" RETURN d'.format(
+                currPatientName, specialty)
             results = driver.query(query, returns=(client.Node))
 
-            for friendKnownPerson in results:
-                friendsKnownPeopleList.append(friendKnownPerson[0]["name"])
+            for doctorVisitedByFriendsOfFriend in results:
+                recommendationDoctorList.append(doctorVisitedByFriendsOfFriend[0]["name"])
 
-        # Filter doctor by specialty, and match if a current patient friend has visited
-        for i in range(len(doctorsBySpecialtyList)):
-            for j in range(len(doctorKnownPeopleList)):
-                query = "MATCH (p:Paciente)-[r:VISITS]->(d:Doctor) WHERE p.name=\"{0}\" AND d.name=\"{1}\" RETURN p,d".format(
-                    doctorKnownPeopleList[j], doctors[i])
-
-                results = driver.query(
-                    query, returns=(client.Node, client.Node))
-                for node in results:
-                    recommendationDoctorList.append(node[1]["name"])
-
-        # If doctor has been visited by friends of current patient friends
-        for i in range(len(doctorsBySpecialtyList)):
-            for j in range(len(friendsKnownPeopleList)):
-                query = "MATCH (p:Paciente)-[r:VISITS]->(d:Doctor) WHERE p.name=\"{0}\" AND d.name=\"{1}\" RETURN p,d".format(
-                    friendsKnownPeopleList[j], doctorsBySpecialtyList[i])
-
-                results = driver.query(
-                    query, returns=(client.Node, client.Node))
-                for node in results:
-                    recommendationDoctorList.append(node[1]["name"])
-
-        return recommendationDoctorList
+    
+    return recommendationDoctorList
 
 # RECOMMENDATION BETWEEN DOCTORS
 def getDoctorRecommendationByKnownDoctor(specialty, doctorName):
 
 	recommendationDoctorList = []
-	query = 'MATCH (d:Doctor)-[r:KNOWS]->(o:Doctor) WHERE d.specialty = \"{0}\" AND d.name = \"{1}\" RETURN d, type(r), o'.format(specialty, doctorName)
+	query = 'MATCH (d:Doctor)-[r:KNOWS]->(o:Doctor) WHERE o.specialty = \"{0}\" AND d.name = \"{1}\" RETURN d, type(r), o'.format(specialty, doctorName)
 
 	results = driver.query(query, returns=(client.Node, str, client.Node))
 	for node in results:        
@@ -237,7 +221,7 @@ def getDoctorRecommendationByKnownDoctor(specialty, doctorName):
 
 		recommendedDoctor = node[2]["name"]
         # Get doctor friends of recommended doctor
-		newQuery = 'MATCH (d:Doctor)-[r:KNOWS]->(o:Doctor) WHERE d.specialty = \"{0}\" AND d.name = \"{1}\" RETURN d, type(r), o'.format(specialty, recommendedDoctor)
+		newQuery = 'MATCH (d:Doctor)-[r:KNOWS]->(o:Doctor) WHERE o.specialty = \"{0}\" AND d.name = \"{1}\" RETURN d, type(r), o'.format(specialty, recommendedDoctor)
 
 		newResults = driver.query(newQuery, returns=(client.Node, str, client.Node))
 

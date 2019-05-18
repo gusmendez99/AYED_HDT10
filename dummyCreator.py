@@ -72,7 +72,4 @@ linkPatientWithDoctor("Justin","Luis")
 linkPatientWithDoctor("Justin","Juan")
 
 
-
-
-
-
+print("Dummy data added successfully, now run main.py ...")

@@ -20,9 +20,9 @@ while(option != 8):
     2. Ingresar un paciente
     3. Ingresar visita de un paciente a un doctor
     4. Obtener doctores por especialidad
-    5. Ingresar que un paciente conoce a otro paciente.
-    6. Obtener recomendacion de doctores que conocen mis conocidos(otros pacientes) 
-    7. Obtener recomendacion de doctores por mi doctor, y por especialidad
+    5. Ingresar que un persona conoce a otra (paciente-paciente/doctor-doctor).
+    6. Obtener recomendacion de doctores que conoce mi doctor, y por especialidad
+    7. Obtener recomendacion de doctores por mis conocidos, y por especialidad
     8. Salir
     ***********************
     """)
@@ -115,7 +115,7 @@ while(option != 8):
                                 nameDoctor1 = input("Ingrese el nombre del doctor que desea relacionar: ")
                                 nameDoctor2 = input("Ingrese el nombre del otro doctor: ")
                                 if(linkDoctorWithDoctor(nameDoctor1, nameDoctor2)):
-                                    print("Relacion entre pacientes creada exitosamente")
+                                    print("Relacion entre doctores creada exitosamente")
                                 else:
                                     print("Ocurrio un error, revisa si los 2 pacientes existen...")
                             elif(secondaryOption == 3):
