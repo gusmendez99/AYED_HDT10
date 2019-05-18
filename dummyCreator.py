@@ -1,4 +1,5 @@
-#Here we're gonna add dummy data, just for tests
+#dummyCreator.py uses the methods in hospital to create a node database 
+#filled with dummy data, for the purpose of this homework.
 
 from hospital import *
 

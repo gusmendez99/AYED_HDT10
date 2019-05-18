@@ -18,26 +18,36 @@ doctors = driver.labels.create("Doctor")
 drugs = driver.labels.create("Drug")
 
 # MAIN FUNCION FOR ADD A VISIT
+# patientName: String name of the patient
+# doctorName: String name of the doctor
+# drugName: StringName of the drug
+# dose: String that represents how many pills the patient has to take
 
 def registerMedicalVisit(patientName, doctorName, drugName, dose):
 
     #Default: dose for 5 days
     currentDate = datetime.now()
     currDateStr = '{:%Y-%m-%d}'.format(currentDate)
-
+    # set the end of the dose
     endDoseDate = datetime.now() + timedelta(days=5)
     endDateStr = '{:%Y-%m-%d}'.format(endDoseDate)
-
+    # adds a drug with given date
     addDrug(drugName, currDateStr, endDateStr, dose)
+    # links a patient with a specific doctor
     linkPatientWithDoctor(patientName, doctorName)
+    # links a patient with a speceific drug
     linkPatientWithDrug(patientName, drugName)
+    # links a docto with a specific drug
     linkDoctorWithDrug(doctorName, drugName)
     return True
 
 # SEARCHS
 
 
-# filter doctors by specialty, returns a list of doctor names
+# filter doctors by specialty
+# param: speciality is the string of the doctor's specialty
+# return: list of doctor names
+# 
 def filterDoctorBySpecialty(specialty):
     doctors = []
     query = "MATCH (d:Doctor) WHERE d.specialty = \"{0}\" RETURN d".format(
@@ -63,21 +73,20 @@ def getKnownPeopleByPatient(patientName):
     return knownPeople
 
 # NODES - CREATE
-
-
+    # addPatient adds a patient-type node to the database with a specific name and phone
 def addPatient(name, phone):
     nodePatient = driver.nodes.create(name=name, phone=phone)
     patients.add(nodePatient)
     return nodePatient
 
-
+# addDoctor adds a doctor-type node to the database with given name, phone, collegiateCode, and specialty String
 def addDoctor(name, phone, collegiateCode, specialty):
     nodeDoctor = driver.nodes.create(
         name=name, phone=phone, collegiateCode=collegiateCode, specialty=specialty)
     doctors.add(nodeDoctor)
     return nodeDoctor
 
-
+# addDrug adds a drug-type node to the database with given name, initDate, and dose
 def addDrug(name, initDate, endDate, dose):
     drugNode = driver.nodes.create(
         name=name, initDate=initDate, endDate=endDate, dose=dose)
@@ -86,6 +95,7 @@ def addDrug(name, initDate, endDate, dose):
 
 
 # RELATIONS - MAIN RELATIONSHIPS
+# makes a match between a patient and a doctor once a medical visit is settled
 def linkPatientWithDoctor(patientName, doctorName):
     query = "MATCH (p:Patient), (d:Doctor) WHERE p.name=\"{0}\" AND d.name=\"{1}\" RETURN p,d".format(
         patientName, doctorName)
@@ -95,7 +105,7 @@ def linkPatientWithDoctor(patientName, doctorName):
         myDoctor = node[1]
         myPatient.relationships.create("VISITS", myDoctor)
 
-
+# makes a match between a patient and a given drug once a medical visit is settled
 def linkPatientWithDrug(patientName, drugName):
     query = "MATCH (p:Patient), (d:Drug) WHERE p.name=\"{0}\" AND d.name=\"{1}\" RETURN p,d".format(
         patientName, drugName)
@@ -105,7 +115,7 @@ def linkPatientWithDrug(patientName, drugName):
         myDrug = node[1]
         myPatient.relationships.create("TAKES", myDrug)
 
-
+# makes a match between a doctor and a given drug once a medical visit is settled
 def linkDoctorWithDrug(doctorName, drugName):
     queryDoctors = "MATCH (d:Doctor) WHERE d.name=\"{0}\" RETURN d".format(
         doctorName)
@@ -122,6 +132,7 @@ def linkDoctorWithDrug(doctorName, drugName):
 
 
 # RELATIONS - SECONDARY RELATIONSHIPS
+# Links all the patient of a specific patient and creates a relation betwwne both of them
 def linkPatientWithPatient(patientName1, patientName2):
     queryPatient1 = 'MATCH (p:Patient) WHERE p.name=\"{0}\" RETURN p'.format(
         patientName1)
@@ -143,7 +154,7 @@ def linkPatientWithPatient(patientName1, patientName2):
 
     return patientsExist
 
-
+#links a doctor witha specific patient
 def linkDoctorWithPatient(doctorName, patientName):
     query = 'MATCH (p:Paciente) WHERE p.name= \"{0}\" RETURN p'.format(
         patientName)
